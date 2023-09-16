@@ -1,3 +1,5 @@
 sso.backup
 cert/
+private_key.pem
+jwks.json
 
