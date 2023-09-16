@@ -59,7 +59,7 @@ func WriteJWKSToFile(jwks *JWKS, filename string) {
 
 func ReadLocalJWKS() (interface{}, error) {
 	
-		data, err := ioutil.ReadFile("/home/codeserver/Code/go/oidcprovider/cert/jwks.json")
+		data, err := ioutil.ReadFile("./cert/jwks.json")
 		if err != nil {
 			return nil, err
 		}

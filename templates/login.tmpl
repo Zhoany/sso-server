@@ -4,7 +4,7 @@
     <title>Login</title>
 </head>
 <body>
-    <form action="/authorize/login" method="post">
+    <form action="/authorize" method="post" onsubmit="constructGetUrl(event)">
         <!-- 用户可见的输入字段 -->
         <label for="username">Username:</label>
         <input type="text" id="username" name="username">
@@ -13,10 +13,41 @@
         <input type="password" id="password" name="password">
         <br>
 
-
-        
+        <!-- 隐藏的输入字段，用于包含返回的参数 -->
+        <input type="hidden" name="response_type" value="{{.responseType}}">
+        <input type="hidden" name="client_id" value="{{.clientID}}">
+        <input type="hidden" name="redirect_uri" value="{{.redirectURI}}">
+        <input type="hidden" name="nonce" value="{{.nonce}}">
+        <input type="hidden" name="state" value="{{.state}}">
 
         <input type="submit" value="Login">
     </form>
+
+    <script>
+        function constructGetUrl(event) {
+            event.preventDefault();
+
+            // 获取表单中的用户名和密码
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // 构建 GET 请求的 URL，包含返回的参数
+            var getUrl = "/authorize" +
+                "?response_type=" + encodeURIComponent(document.getElementsByName("response_type")[0].value) +
+                "&client_id=" + encodeURIComponent(document.getElementsByName("client_id")[0].value) +
+                "&redirect_uri=" + encodeURIComponent(document.getElementsByName("redirect_uri")[0].value) +
+                "&nonce=" + encodeURIComponent(document.getElementsByName("nonce")[0].value) +
+                "&state=" + encodeURIComponent(document.getElementsByName("state")[0].value) +
+                "&username=" + encodeURIComponent(username) +
+                "&password=" + encodeURIComponent(password);
+
+            // 更新表单的 action 属性，将 GET 请求的 URL 附加到 action 中
+            document.querySelector("form").action = getUrl;
+
+            // 提交表单，这将触发 GET 请求
+            document.querySelector("form").submit();
+        }
+    </script>
 </body>
 </html>
+

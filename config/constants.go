@@ -8,7 +8,7 @@ const (
 	Username="yvon"
 	Email="501532945@qq.com"
 	LoginUsername="zay"
-	LoginPassword="zzz"
+	LoginPassword="123456"
 	Code="1gggtgr6"
 )
 

@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"cas/jwks"
-	"log"
+	
 	"net/http"
-	"cas/config"
+	//"cas/config"
+	"cas/db"
 )
 
 func UserinfoEndpoint(c *gin.Context) {
@@ -13,22 +13,20 @@ func UserinfoEndpoint(c *gin.Context) {
     token := c.Request.Header.Get("Authorization")
 	
 	
-	jwtString, err :=jwks.ReadJWTFromFile("/home/codeserver/Code/go/oidcprovider/cert/jwt")
-	if err != nil {
-		log.Fatalf("Error reading JWT from file: %v", err)
+  tokenconfig,err:=db.FindAccessTokenByToken(token[7:])
+	if err!=nil{
+		c.JSON(500, gin.H{"error":"token问题"})
 	}
-	access:="bearer "+jwtString
-	log.Println(access)
-	log.Println(token)
-    if token == "" || token != access {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-        return
-    }
-	
+	User,err:=db.Finduserinfobysub(tokenconfig.Sub)
+	if err!=nil{
+		c.JSON(500, gin.H{"error":"找不到用户"})
+		return 
+	}
+
     userInfo := gin.H{
-        "sub": "1234567890", // 用户的唯一标识符
-        "name": config.Username,
-        "email": config.Email,
+        "sub": User.Sub, // 用户的唯一标识符
+        "name": User.Username,
+        "email": User.Email,
         "picture": "https://example.com/johndoe.jpg",
     }
 
